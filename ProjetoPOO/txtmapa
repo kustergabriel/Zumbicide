@@ -1,0 +1,114 @@
+public void causardanojogador() {
+    if (Arma) {
+        Zumbi.vidaAtual -= 2;
+    } else if (TacoBasebol) {
+        Zumbi.vidaAtual -= 1.5;
+    } else {
+        Zumbi.vidaAtual -= 1;
+    }
+}
+
+ public void causardanobatZ(){
+
+if(ZumbiGigante){
+
+    Jogador.vidaAtual -= 2;
+}else{
+    Jogador.vidaAtual -= 1;
+}
+
+
+ }
+ public void int dadotresfaces(){
+
+    if (Zumbi.vidaAtual > 0){
+         Scanner teclado = new Scanner(System.in);
+
+                while (opcao == 's') {
+
+                    System.out.println("Lancando o dado... ");
+                    int dado = (int) (Math.random() * 3 + 1);
+                    System.out.println("dado = " + dado);
+
+    }if(dado <= percepcao){
+        Zumbi.dano(null);
+        causardanobatZ();
+    
+    }else{
+
+  causardanobatZ();
+      
+ }
+    }
+    public void int dado () {
+        Scanner teclado = new Scanner(System.in);
+
+                while (opcao == 's') {
+
+                    System.out.println("Lancando o dado... ");
+                    int dado = (int) (Math.random() * 6 + 1);
+                    System.out.println("dado = " + dado);
+
+                    if (dado == 6) {
+                        Zumbi.vidaAtual -= 2; 
+                        System.out.println("dano critico");
+                    }
+                    break;
+                }
+
+
+    } public void interfacebat() {
+         Batalha() {
+        JFrame janela = new JFrame();
+        
+        JLabel msg = new JLabel("Escolha como atacar?"); 
+        msg.setBounds(350, 50, 200, 30); 
+        JButton botaoatacar = new JButton("--Atacar (Ataca com oq estiver na mao)--");
+        botaoatacar.setBounds(550,500,200,30)
+        botaoatacar.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                causardanojogador();
+                }
+
+        });
+
+        JButton botao = new JButton("--REVOLVER--");
+        botao.setBounds(200, 410, 200, 30);
+         botao.addActionListener(new ActionListener() {
+           
+           public void actionPerformed(ActionEvent e) {
+             Arma.municao -= 1;
+             Zumbi.vida = vida - 2; 
+             }
+
+         });
+
+        JButton botao2 = new JButton("--soco--");
+        botao2.setBounds(500, 410, 200, 30);
+        botao2.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+               dado();
+
+            }
+        });
+        janela.add(msg);
+        janela.setLayout(null);
+        janela.add(botao);
+        janela.add(botao2);
+        janela.setBounds(225, 150, 900, 500);
+        janela.setDefaultCloseOperation(3);
+        janela.setVisible(true);
+
+
+    }public void batalha(){
+    if(Jogador [i][j]== ZumbiCorredor[i][j] || ZumbiGigante[i][j]||ZumbiNormal[i][j]||ZumbiRastejante[i][j]){
+    
+    interfacebat();
+    dadotresfaces();
+    }
+    }
+
+ }
+ }
+}

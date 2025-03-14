@@ -1,0 +1,10 @@
+P W N B N N N Z N N
+N W N W R N N B N N
+N W N W N N W W N Z
+N W N W N N W W N N
+N N B W N C W W N N
+N W W W N N W W C N
+Z W N N N Z W W N N
+N W N R N B N N N N
+N W W W W W N N W N
+B N N N N N N N W G
