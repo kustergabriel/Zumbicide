@@ -13,14 +13,6 @@ public class Controlador {
     }
 
     //MÉTODOS
-    /*public void moverJogador(int novoX, int novoY) {
-        if (tabuleiro.moverJogador(novoX, novoY)) {
-            interfaceJogo.atualizarTabuleiro(tabuleiro.getTabuleiro());
-        } else {
-            System.out.println("Movimento inválido!");
-        }
-    }*/
-
     // Coisas do jogador
     public void jogarDadoEsquiva (int percepcao) {
             if ((gerador.nextInt(3) + 1) == percepcao) { // + 1 para ele pular o zero na contagem

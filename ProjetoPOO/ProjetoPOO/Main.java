@@ -1,5 +1,3 @@
- import Entidades.*;
-
 public class Main {
     public static void main(String[] args) {
         
@@ -13,7 +11,6 @@ public class Main {
     InterfaceJogo interfaceJogo = new InterfaceJogo(); 
     Controlador controlador = new Controlador(mapa, interfaceJogo);
     interfaceJogo.setVisible(true);
-
 
     }
 }

@@ -1,7 +1,5 @@
 import javax.swing.*;
-
 import Entidades.*;
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -10,14 +8,13 @@ public class InterfaceJogo extends JFrame {
     private int tamanho = 10;
     private JButton[][] botoes = new JButton[tamanho][tamanho];
     private Mapa mapa1 = new Mapa(); 
-    private String[][] mapa2;
-    //Controlador controlador = new Controlador(mapa1, null);
+    private Entidades[][] mapa2;
 
     //CONSTRUTOR
     InterfaceJogo() {
         mapa2 = mapa1.getMapa();
 
-        setTitle("ZUMBICIDE");
+        setTitle("ZUMBIS ODEIAM JAVA");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700,700);
         setLocationRelativeTo(null);
@@ -28,17 +25,34 @@ public class InterfaceJogo extends JFrame {
         for (int i = 0; i < tamanho; i++) {
             for (int j = 0; j < tamanho; j++) {
                 botoes[i][j] = new JButton();
+                
+                if (mapa2[i][j] instanceof Jogador) {
+                    botoes[i][j].setText("P");
+                } else if (mapa2[i][j] instanceof Parede) {
+                    botoes[i][j].setText("W");
+                } else if (mapa2[i][j] instanceof Bau) {
+                    botoes[i][j].setText("B");
+                } else if (mapa2[i][j] instanceof ZumbiNormal) {
+                    botoes[i][j].setText("Z");
+                } else if (mapa2[i][j] instanceof ZumbiRastejante) {
+                    botoes[i][j].setText("ZR");
+                } else if (mapa2[i][j] instanceof ZumbiGigante) {
+                    botoes[i][j].setText("ZG");
+                } else if (mapa2[i][j] instanceof ZumbiCorredor) {
+                    botoes[i][j].setText("ZC");
+                } else {
+                    botoes[i][j].setText(" ");;
+                }
 
-
-                if(mapa2[i][j].equals("W")){
+                if(botoes[i][j].getText().equals("W")){
                         botoes[i][j].setEnabled(false); //Desabilitar paredes
                     }
                     
                 //Borda rosa
-                botoes[i][j].setBorder(BorderFactory.createLineBorder(Color.PINK));
-
+                botoes[i][j].setBorder(BorderFactory.createLineBorder(Color.PINK));   
+                
                 //Deixar não transparente
-                definirCor(botoes[i][j], mapa2[i][j]);
+                definirCor(botoes[i][j], botoes[i][j].getText());
                 
                 final int x = i;
                 final int y = j;
@@ -48,6 +62,7 @@ public class InterfaceJogo extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         if (mapa1.moverJogador(x, y)) {
                             atualizarTabuleiro(mapa1.getTabuleiro());
+
                         } else {
                             System.out.println("Movimento inválido!");
                         }
@@ -90,8 +105,8 @@ public class InterfaceJogo extends JFrame {
                     botoes[i][j].setText("B");
                     definirCor(botoes[i][j], "B");
                 } else if (tabuleiro[i][j] instanceof ZumbiNormal) {
-                   botoes[i][j].setText("Z");
-                   definirCor(botoes[i][j], "Z");
+                    botoes[i][j].setText("Z");
+                    definirCor(botoes[i][j], "Z");
                 } else if (tabuleiro[i][j] instanceof ZumbiRastejante) {
                     botoes[i][j].setText("ZR");
                     definirCor(botoes[i][j], "ZR");
@@ -102,8 +117,8 @@ public class InterfaceJogo extends JFrame {
                     botoes[i][j].setText("ZC");
                     definirCor(botoes[i][j], "ZC");
                 } else {
-                   botoes[i][j].setText(" ");
-                   definirCor(botoes[i][j], " "); // Espaço vazio
+                    botoes[i][j].setText(" ");
+                    definirCor(botoes[i][j], " "); // Espaço vazio
                 }
             }
         }

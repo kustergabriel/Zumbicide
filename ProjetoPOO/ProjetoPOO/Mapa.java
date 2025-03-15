@@ -13,8 +13,7 @@ public class Mapa extends Entidades {
 
     //CONSTRUTOR
     Mapa() {
-        //mapa = EscolherMapa();
-        //Só temos 1 mapa
+        mapa = EscolherMapa();
         mapa = "ProjetoPOO/Mapas/Mapa_1.txt";
         
         try (BufferedReader br = new BufferedReader(new FileReader(mapa))) {
@@ -62,8 +61,8 @@ public class Mapa extends Entidades {
     }
 
     //MÉTODOS
-    /*private String EscolherMapa() {
-        num_aleatorio = (int)(Math.random() * 3) + 1; // Gera um valor aleatório 1 a 3
+    private String EscolherMapa() {
+        int num_aleatorio = (int)(Math.random() * 3) + 1; // Gera um valor aleatório 1 a 3
         if(num_aleatorio == 1) {
             mapa = "ProjetoPOO/Mapas/Mapa_1.txt";
         } else if (num_aleatorio == 2) {
@@ -72,7 +71,7 @@ public class Mapa extends Entidades {
             mapa = "ProjetoPOO/Mapas/Mapa_3.txt";
         }
         return mapa;
-    }*/
+    }
 
     public boolean moverJogador(int novaX, int novaY) {
         //Mover uma casa por vez
@@ -109,6 +108,8 @@ public class Mapa extends Entidades {
                     System.out.print("ZG ");
                 } else if (tabuleiro[i][j] instanceof ZumbiCorredor) {
                     System.out.print("ZC ");
+                } else if (tabuleiro[i][j] instanceof Vazio){
+                    System.out.print("X");
                 } else {
                     System.out.print(" "); // Espaço vazio
                 }
@@ -117,9 +118,52 @@ public class Mapa extends Entidades {
         }
     }
 
-    public String[][] getMapa() {
-    String[][] mapa_tabuleiro = new String[10][10];
+    public Entidades[][] getMapa() {
+        return tabuleiro;
+    }
 
+    public Entidades getObjetoXY(int x, int y) {
+        return tabuleiro[x][y];
+    }
+
+    public Jogador getJogador() {
+    return player;
+}
+
+    public Entidades[][] getTabuleiro() {
+        return tabuleiro;
+    }
+
+  // ------------METODOS DA BATALHA (SOCORRO)---------
+
+/*
+   public void Dano_ao_zumb(Zumbi zumbi) {
+        
+        if (ZumbiRastejante && Arma) {
+            ZumbiRastejante.vidaAtual -= 0;
+
+            return;
+        } else if (ZumbiGigante) {
+            if (Arma) {
+                zumbi.vidaAtual -= 2;
+            }
+
+            return;
+        } else {
+            if (Arma) {
+                zumbi.vidaAtual -= 2;
+            } else if (TacoBasebol) {
+                zumbi.vidaAtual -= 1.5;
+            } else {
+                zumbi.vidaAtual -= 1;
+            }
+        }
+    }
+*/
+
+
+public String[][] getMapaReserva() {
+    String[][] mapa_tabuleiro = new String[10][10];
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 if (tabuleiro[i][j] instanceof Jogador) {
@@ -144,16 +188,24 @@ public class Mapa extends Entidades {
     return mapa_tabuleiro;
     }
 
-    public Entidades getObjetoXY(int x, int y) {
-        return tabuleiro[x][y];
-    }
 
-    public Jogador getJogador() {
-    return player;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
-    public Entidades[][] getTabuleiro() {
-        return tabuleiro;
-    }
-
-}
