@@ -61,13 +61,11 @@ public class InterfaceJogo extends JFrame {
                 @Override
                     public void actionPerformed(ActionEvent e) {
                         if (mapa1.moverJogador(x, y)) {
-                            atualizarTabuleiro(mapa1.getTabuleiro());
+                            atualizarTabuleiro(mapa1.getMapa());
 
                         } else {
                             System.out.println("Movimento inválido!");
                         }
-                        //controlador.moverJogador(x, y);
-                        //Jogador.getJogador_X(), Jogador.getJogador_Y()
                         }
                     });
 

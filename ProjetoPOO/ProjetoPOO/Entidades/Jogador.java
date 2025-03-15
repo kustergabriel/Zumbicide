@@ -1,7 +1,4 @@
 package Entidades;
-import Itens.Arma;
-import Itens.Atadura;
-import Itens.TacoBasebol;
 
 public class Jogador extends Entidades {
     // atributos
@@ -9,12 +6,12 @@ public class Jogador extends Entidades {
     private int percepcao; // definida na dificuldade do jogo, ver como pegar quando a dificuldade for escolhida
     private int x;
     private int y;
-    Arma arma;
-    Atadura atadura;
-    TacoBasebol taco;
+    private int municao;
+    private boolean tacoBasebol;
+    private boolean arma;
+    private boolean atadura;
     
     public Jogador  () {
-        this.vida = 20; // ver sobre isso
         this.x = 0;
         this.y = 0;
     }
@@ -52,4 +49,22 @@ public class Jogador extends Entidades {
     public void setJogador_Y(int y) {
         this.y = y;
     }
+    
+    
+    public int getMunicao() {
+        return municao;
+    }
+
+    public boolean getTacoBasebol() {
+        return tacoBasebol;
+    }
+
+    public boolean getArma() {
+        return arma;
+    }
+
+    public boolean getAtadura () {
+        return atadura;
+    }
+
 }

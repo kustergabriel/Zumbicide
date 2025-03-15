@@ -1,20 +1,39 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 import Entidades.*;
 
 public class Mapa extends Entidades {
     //ATRIBUTOS
-    //private char opcao = 's';
+    private String opcao = "Mao";
     private final  int tamanho = 10;
     public  Entidades[][] tabuleiro = new Entidades[tamanho][tamanho];
     private String mapa;
     private Jogador player = new Jogador();
+    //Criar a lista com os itens do bau
+    private ArrayList<String> itens = new ArrayList<>(Arrays.asList("Taco", "Atadura", "Revolver", "Revolver"));
 
     //CONSTRUTOR
     Mapa() {
         mapa = EscolherMapa();
         mapa = "ProjetoPOO/Mapas/Mapa_1.txt";
+
+        //Parte para criar os baus
+        //Aleatorizar, pra depois fazer um contador e fica 10/10
+        Collections.shuffle(itens);
+        //Como o array tem 4 itens, e sempre vai ter 4 baus, eu vou colocar um em cada
+        int contador_bau = 0;
         
         try (BufferedReader br = new BufferedReader(new FileReader(mapa))) {
             String linha;
@@ -35,7 +54,11 @@ public class Mapa extends Entidades {
                             tabuleiro[i][j] = new Parede(); 
                             break;
                         case 'B': 
-                            tabuleiro[i][j] = new Bau(); 
+                            tabuleiro[i][j] = new Bau(itens.get(contador_bau));
+
+                            //AQUI TAVA DANDO BO PQ O ARQUIVO DE EXEMPLO TEM 5 BAUS
+                            //ENTÃO ADICIONEI O RESET PRA SE ALGUEM COLOCAR 5 OU MAIS BAUS NAO QUEBRAR
+                            contador_bau = (contador_bau + 1) % itens.size();
                             break;
                         case 'Z': 
                             tabuleiro[i][j] = new ZumbiNormal(); 
@@ -86,6 +109,17 @@ public class Mapa extends Entidades {
 
                     tabuleiro[novaX][novaY] = player;
                     return true;
+                } else if (tabuleiro[novaX][novaY] instanceof Bau) {
+                    Bau bau = (Bau) tabuleiro[novaX][novaY]; //Faz o casting para Bau PORCARIA DE JAVA 3H PRA ISSO
+                    String item = bau.getItem();
+
+                    //JUNIOR(EU) CONTINUAR AQUI
+                    //FAZER A LOGICA DO BAU
+                    //ELES QUE SE FODAM NA BATALHA LA
+                    
+                } else {
+                    interfaceBatalha(player, tabuleiro[novaX][novaY] );
+                    return true;
                 }
             }
             return false;
@@ -128,39 +162,91 @@ public class Mapa extends Entidades {
 
     public Jogador getJogador() {
     return player;
-}
-
-    public Entidades[][] getTabuleiro() {
-        return tabuleiro;
     }
 
-  // ------------METODOS DA BATALHA (SOCORRO)---------
 
-/*
-   public void Dano_ao_zumb(Zumbi zumbi) {
+
+    // ------------METODOS DA BATALHA (SOCORRO)---------
+    public void interfaceBatalha(Jogador player, Entidades zumbi) {
+        JFrame janela = new JFrame();
         
-        if (ZumbiRastejante && Arma) {
-            ZumbiRastejante.vidaAtual -= 0;
+        JButton botaoFugir = new JButton("--FUGIR--");
+        botaoFugir.setBounds(600,500,200,30);
+        
+        botaoFugir.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        }});
+        
+        JLabel msg = new JLabel("Escolha como atacar?"); 
+        msg.setBounds(350, 50, 200, 30); 
+        
+        JButton botao = new JButton("--REVOLVER--");
+        botao.setBounds(300, 410, 200, 30);
 
-            return;
-        } else if (ZumbiGigante) {
-            if (Arma) {
-                zumbi.vidaAtual -= 2;
-            }
+        JButton botao2 = new JButton("--SOCO--");
+        botao2.setBounds(520, 410, 200, 30);
+        botao2.addActionListener(new ActionListener() {
 
-            return;
-        } else {
-            if (Arma) {
-                zumbi.vidaAtual -= 2;
-            } else if (TacoBasebol) {
-                zumbi.vidaAtual -= 1.5;
-            } else {
-                zumbi.vidaAtual -= 1;
+            public void actionPerformed(ActionEvent e) {
+                Scanner teclado = new Scanner(System.in);
+
+                if (opcao == "Mao") {
+                    danoComAMao(zumbi);
+                }
+                
             }
-        }
+        });
+        janela.add(botaoFugir);
+        janela.add(msg);
+        janela.setLayout(null);
+        janela.add(botao);
+        janela.add(botao2);
+        janela.setBounds(225, 150, 900, 500);
+        janela.setDefaultCloseOperation(3);
+        janela.setVisible(true);
     }
-*/
 
+    
+    public int danoComAMao (Entidades zumbi) {
+        Zumbi zumbiCast = (Zumbi) zumbi;
+        int dado = (int) (Math.random() * 6 + 1);
+        if(zumbi instanceof ZumbiGigante){
+            int vidaperdida = zumbiCast.getVida();
+            vidaperdida -= 0;
+            zumbiCast.setVida(vidaperdida);
+        }
+        
+        if (dado == 6){
+            int vidaperdida = zumbiCast.getVida();
+            vidaperdida -= 2;
+            zumbiCast.setVida(vidaperdida);
+            System.out.println (zumbiCast.getVida());
+        }
+        else {
+            int vidaperdida = zumbiCast.getVida();
+            vidaperdida -= 1;
+            zumbiCast.setVida(vidaperdida);
+            System.out.println (zumbiCast.getVida());
+        }
+        
+        if (player.getTacoBasebol() == true) {
+            int vidaperdida = zumbiCast.getVida();
+            vidaperdida -= 1.5;
+            zumbiCast.setVida(vidaperdida);
+
+        } 
+        
+        //System.out.println("dado = " + dado);
+            //if (dado == 6) {
+                //System.out.println("dano critico");
+            //}
+        return dado;
+    }
+
+    public void bau() {
+
+    }
+    
 
 public String[][] getMapaReserva() {
     String[][] mapa_tabuleiro = new String[10][10];
@@ -189,16 +275,27 @@ public String[][] getMapaReserva() {
     }
 
 
+/* 
+   public void Dano_ao_zumb(Zumbi zumbi) {
+        if (ZumbiRastejante && arma) {
+            ZumbiRastejante.vidaAtual -= 0;
 
+            return;
+        } else if (ZumbiGigante) {
+            if (Arma) {
+                zumbi.vidaAtual -= 2;
+            }
 
-
-
-
-
-
-
-
-
+            return;
+        } else {
+            if (Arma) {
+                zumbi.vidaAtual -= 2;
+            } else if (TacoBasebol) {
+                zumbi.vidaAtual -= 1.5;
+            } else {
+                zumbi.vidaAtual -= 1;
+            }
+        }*/
 
 
 
