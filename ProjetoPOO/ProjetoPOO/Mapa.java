@@ -16,24 +16,33 @@ import Entidades.*;
 
 public class Mapa extends Entidades {
     //ATRIBUTOS
+    public static boolean debug = true;
     private String opcao = "Mao";
     private final  int tamanho = 10;
     public  Entidades[][] tabuleiro = new Entidades[tamanho][tamanho];
+    private InterfaceJogo interfaceJogo; // Para armazenar a referência da InterfaceJogo
     private String mapa;
     private Jogador player = new Jogador();
     //Criar a lista com os itens do bau
-    private ArrayList<String> itens = new ArrayList<>(Arrays.asList("Taco", "Atadura", "Revolver", "Revolver"));
+    private ArrayList<String> itens = new ArrayList<String>();
+
 
     //CONSTRUTOR
-    Mapa() {
+    Mapa(InterfaceJogo interfaceJogo) {
+        this.interfaceJogo = interfaceJogo; // Inicializa a variável
         mapa = EscolherMapa();
         mapa = "ProjetoPOO/Mapas/Mapa_1.txt";
 
-        //Parte para criar os baus
+        //----------------------------------------------------BAU----------------------------------------------------------
         //Aleatorizar, pra depois fazer um contador e fica 10/10
         Collections.shuffle(itens);
         //Como o array tem 4 itens, e sempre vai ter 4 baus, eu vou colocar um em cada
         int contador_bau = 0;
+        itens.add("Taco");
+        itens.add("Atadura");
+        itens.add("Revolver");
+        itens.add("Revolver");
+        //----------------------------------------------------BAU----------------------------------------------------------
         
         try (BufferedReader br = new BufferedReader(new FileReader(mapa))) {
             String linha;
@@ -164,10 +173,9 @@ public class Mapa extends Entidades {
     return player;
     }
 
-
-
     // ------------METODOS DA BATALHA (SOCORRO)---------
     public void interfaceBatalha(Jogador player, Entidades zumbi) {
+        Zumbi zumbiCast = (Zumbi) zumbi;
         JFrame janela = new JFrame();
         
         JButton botaoFugir = new JButton("--FUGIR--");
@@ -187,15 +195,21 @@ public class Mapa extends Entidades {
         botao2.setBounds(520, 410, 200, 30);
         botao2.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                Scanner teclado = new Scanner(System.in);
+        // Quando clica no botao, chamamos a funcao que o jogador da dano!
+        public void actionPerformed(ActionEvent e) {
 
                 if (opcao == "Mao") {
-                    danoComAMao(zumbi);
+                    // Dando problema depois se clica 2x no soco
+                    if (zumbiCast.getVida() == 0) {
+                        janela.setVisible(false);
+                    }
+                    jogadorDaDano(zumbi);
                 }
                 
             }
         });
+
+        // Adicoes de Botoes
         janela.add(botaoFugir);
         janela.add(msg);
         janela.setLayout(null);
@@ -206,42 +220,60 @@ public class Mapa extends Entidades {
         janela.setVisible(true);
     }
 
-    
-    public int danoComAMao (Entidades zumbi) {
+    public void jogadorDaDano (Entidades zumbi) {
         Zumbi zumbiCast = (Zumbi) zumbi;
+        if (zumbiCast.getVida() != 0) {
+        int vidaperdida;
+        int turnos = 0;
+        
+        do { // Jogador e Zumbi podem dar dano...
         int dado = (int) (Math.random() * 6 + 1);
+        turnos++;
         if(zumbi instanceof ZumbiGigante){
-            int vidaperdida = zumbiCast.getVida();
-            vidaperdida -= 0;
-            zumbiCast.setVida(vidaperdida);
+            int vida = zumbiCast.getVida();
+            vida -= 0;
+            zumbiCast.setVida(vida);
         }
         
         if (dado == 6){
-            int vidaperdida = zumbiCast.getVida();
-            vidaperdida -= 2;
+            int vida = zumbiCast.getVida();
+            vidaperdida = vida - 2;
             zumbiCast.setVida(vidaperdida);
-            System.out.println (zumbiCast.getVida());
+            System.out.println ("Vida do Zumbi: " + vida + ", Vida depois do soco forte: " + vidaperdida);
         }
-        else {
-            int vidaperdida = zumbiCast.getVida();
-            vidaperdida -= 1;
-            zumbiCast.setVida(vidaperdida);
-            System.out.println (zumbiCast.getVida());
-        }
+            else {
+                int vida = zumbiCast.getVida();
+                vidaperdida = vida - 1;
+                zumbiCast.setVida(vidaperdida);
+                System.out.println ("Vida do Zumbi: " + vida + ", Vida depois do soco xoxinho: " + vidaperdida);
+            }
         
         if (player.getTacoBasebol() == true) {
-            int vidaperdida = zumbiCast.getVida();
-            vidaperdida -= 1.5;
-            zumbiCast.setVida(vidaperdida);
+            int vida = zumbiCast.getVida();
+            vida -= 1.5;
+            zumbiCast.setVida(vida);
 
         } 
+    } while (vidaperdida != 0 && player.getVida() != 0);
+
+    if (vidaperdida == 0) {
+        System.out.println("Turnos Jogados: " + turnos);
+        System.out.println("Zumbi Morto!");
+
+        // Atualizando o tabuleiro para remover o zumbi
+        for (int i = 0; i < tamanho; i++) {
+            for (int j = 0; j < tamanho; j++) {
+                if (tabuleiro[i][j] == zumbiCast) {
+                    tabuleiro[i][j] = new Vazio();  // Zumbi morreu, substitui por Vazio
+                }
+            }
+        }
         
-        //System.out.println("dado = " + dado);
-            //if (dado == 6) {
-                //System.out.println("dano critico");
-            //}
-        return dado;
+        // Atualizando a interface gráfica
+        interfaceJogo.atualizarTabuleiro(tabuleiro);
     }
+    }
+}
 
     public void bau() {
 

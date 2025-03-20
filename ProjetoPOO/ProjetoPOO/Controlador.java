@@ -29,9 +29,4 @@ public class Controlador {
             System.out.println("Nao Critico!!!!");
         }
     }
-
-
-
-
-    
 }

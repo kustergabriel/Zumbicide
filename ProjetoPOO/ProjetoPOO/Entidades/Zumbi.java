@@ -6,6 +6,7 @@ public abstract class Zumbi extends Entidades {
 
    
     public Zumbi(int vida, int dano) {
+        this.vida = vida;
         this.dano = dano;
     }
 

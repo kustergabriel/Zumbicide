@@ -14,6 +14,7 @@ public class Jogador extends Entidades {
     public Jogador  () {
         this.x = 0;
         this.y = 0;
+        this.vida = 20;
     }
 
 
