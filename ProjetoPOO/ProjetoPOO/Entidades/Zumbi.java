@@ -29,5 +29,10 @@ public abstract class Zumbi extends Entidades {
         this.dano = dano;
     }
 
-    
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
 }

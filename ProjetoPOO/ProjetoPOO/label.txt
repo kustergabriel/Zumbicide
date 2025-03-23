@@ -1,0 +1,19 @@
+JFrame MORTO = new JFrame();
+
+   JLabel msg1 = new JLabel("Vida do jogador apos a batalha: " + player.getVida()); 
+   msg1.setBounds(350, 50, 200, 30); 
+
+   JLabel msg2 = new JLabel("Turnos Jogados: " + turnos); 
+    msg2.setBounds(350, 50, 200, 30); 
+
+   JLabel msg3 = new JLabel("Zumbi Morto!"); 
+    msg3.setBounds(350, 50, 200, 30); 
+
+
+
+MORTO.setDefaultCloseOperation(3);
+MORTO.setVisible(true);
+MORTO.add(msg1);
+MORTO.add(msg3);
+MORTO.add(msg2);
+MORTO.setLayout(null);

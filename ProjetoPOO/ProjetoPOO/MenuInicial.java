@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 
 public class MenuInicial extends JFrame implements ActionListener {
 
@@ -9,7 +10,7 @@ public class MenuInicial extends JFrame implements ActionListener {
     JButton botaoSair;
 
     public MenuInicial() {
-        setTitle("MATRIX OF ZUMBYS");
+        setTitle("ZUMBIS ODEIAM JAVA");
         setSize(700, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centraliza a janela na tela
@@ -19,8 +20,16 @@ public class MenuInicial extends JFrame implements ActionListener {
         container.setLayout(new BorderLayout());
 
         // Carregando a imagem
-        String caminhoImagem = "C:/Users/Gabriel Azevedo/Desktop/ProjetoPOO/Imagens/imagemlogo.png";
+        String caminhoImagem = "C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/imagemLogo.jpg";
 		ImageIcon imagemIcon = new ImageIcon(caminhoImagem);
+        
+
+        File file = new File(caminhoImagem);
+        if (!file.exists()) {
+        System.out.println("Erro: O arquivo não foi encontrado! Verifique o caminho.");
+        } else {
+        System.out.println("Arquivo encontrado!");
+        }
 
 		if (imagemIcon.getImageLoadStatus() == MediaTracker.COMPLETE) {
     	System.out.println("Imagem carregada com sucesso!");
@@ -29,7 +38,7 @@ public class MenuInicial extends JFrame implements ActionListener {
 			}
         // Redimensionando a imagem (opcional)
         Image imagem = imagemIcon.getImage();
-        Image novaImagem = imagem.getScaledInstance(500, 500, Image.SCALE_SMOOTH); // Ajuste o tamanho conforme necessário
+        Image novaImagem = imagem.getScaledInstance(700, 700, Image.SCALE_SMOOTH); // Ajuste o tamanho conforme necessário
         imagemIcon = new ImageIcon(novaImagem);
 
         // Criando um JLabel para exibir a imagem
@@ -69,9 +78,9 @@ public class MenuInicial extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent evento) {
         if (evento.getSource() == botaoIniciar) {
             setVisible(false);
-            //SwingUtilities.invokeLater(() -> {
-            //    new Mapa().setVisible(true);
-            //});
+            InterfaceJogo interfaceJogo = new InterfaceJogo(); 
+            interfaceJogo.setVisible(true);
+
         }
         if (evento.getSource() == botaoSair) {
             System.exit(0);

@@ -6,9 +6,10 @@ public class Main {
     Entidades player = new Jogador(); */
 
     //Mapa mapa = new Mapa();
-    InterfaceJogo interfaceJogo = new InterfaceJogo(); 
+    //InterfaceJogo interfaceJogo = new InterfaceJogo(); 
     //Controlador controlador = new Controlador(mapa, interfaceJogo);
-    interfaceJogo.setVisible(true);
+    //interfaceJogo.setVisible(true);
+    new MenuInicial(); // Abre o menu inicial
 
     }
 }
