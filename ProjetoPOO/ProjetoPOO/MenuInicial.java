@@ -1,13 +1,18 @@
 import javax.swing.*;
+import Entidades.Jogador;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 
 public class MenuInicial extends JFrame implements ActionListener {
 
+    public static int setarPercepcao;
+    Jogador jogador;
     JButton botaoIniciar;
     JButton botaoDebug;
     JButton botaoSair;
+    JButton botaoDificuldade1;
+    JButton botaoDificuldade2;
+    JButton botaoDificuldade3;
 
     public MenuInicial() {
         setTitle("ZUMBIS ODEIAM JAVA");
@@ -21,29 +26,16 @@ public class MenuInicial extends JFrame implements ActionListener {
 
         // Carregando a imagem
         String caminhoImagem = "C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/imagemLogo.jpg";
-		ImageIcon imagemIcon = new ImageIcon(caminhoImagem);
-        
+        ImageIcon imagemIcon = new ImageIcon(caminhoImagem);
 
-        File file = new File(caminhoImagem);
-        if (!file.exists()) {
-        System.out.println("Erro: O arquivo não foi encontrado! Verifique o caminho.");
-        } else {
-        System.out.println("Arquivo encontrado!");
-        }
-
-		if (imagemIcon.getImageLoadStatus() == MediaTracker.COMPLETE) {
-    	System.out.println("Imagem carregada com sucesso!");
-			} else {
-    	System.out.println("Erro ao carregar a imagem. Verifique o caminho: " + caminhoImagem);
-			}
         // Redimensionando a imagem (opcional)
         Image imagem = imagemIcon.getImage();
-        Image novaImagem = imagem.getScaledInstance(700, 700, Image.SCALE_SMOOTH); // Ajuste o tamanho conforme necessário
+        Image novaImagem = imagem.getScaledInstance(700, 700, Image.SCALE_SMOOTH);
         imagemIcon = new ImageIcon(novaImagem);
 
         // Criando um JLabel para exibir a imagem
         JLabel labelImagem = new JLabel(imagemIcon);
-        labelImagem.setHorizontalAlignment(JLabel.CENTER); // Centraliza a imagem no JLabel
+        labelImagem.setHorizontalAlignment(JLabel.CENTER);
 
         // Adicionando a imagem ao container
         container.add(labelImagem, BorderLayout.CENTER);
@@ -53,12 +45,16 @@ public class MenuInicial extends JFrame implements ActionListener {
         painelBotoes.setBackground(Color.LIGHT_GRAY);
 
         // Criando os botões
-        botaoIniciar = new JButton("Iniciar Jogo");
         botaoSair = new JButton("Sair do Jogo");
         botaoDebug = new JButton("DEBUG");
+        botaoDificuldade1 = new JButton("Fácil");
+        botaoDificuldade2 = new JButton("Médio");
+        botaoDificuldade3 = new JButton("Difícil");
 
         // Adicionando os botões ao painel
-        painelBotoes.add(botaoIniciar);
+        painelBotoes.add(botaoDificuldade1);
+        painelBotoes.add(botaoDificuldade2);
+        painelBotoes.add(botaoDificuldade3);
         painelBotoes.add(botaoDebug);
         painelBotoes.add(botaoSair);
 
@@ -67,8 +63,10 @@ public class MenuInicial extends JFrame implements ActionListener {
 
         // Adicionando listeners aos botões
         botaoSair.addActionListener(this);
-        botaoIniciar.addActionListener(this);
         botaoDebug.addActionListener(this);
+        botaoDificuldade1.addActionListener(this);
+        botaoDificuldade2.addActionListener(this);
+        botaoDificuldade3.addActionListener(this);
 
         // Tornando a janela visível
         setVisible(true);
@@ -76,21 +74,26 @@ public class MenuInicial extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent evento) {
-        if (evento.getSource() == botaoIniciar) {
-            setVisible(false);
-            InterfaceJogo interfaceJogo = new InterfaceJogo(); 
-            interfaceJogo.setVisible(true);
-
-        }
         if (evento.getSource() == botaoSair) {
             System.exit(0);
         }
         if (evento.getSource() == botaoDebug) {
-            System.exit(0);
+            Mapa.debug = !Mapa.debug;
         }
-    }
-
-    public static void main(String[] args) {
-        new MenuInicial();
+        if (evento.getSource() == botaoDificuldade1) {
+            setarPercepcao = 3;
+            InterfaceJogo interfaceJogo = new InterfaceJogo();
+            interfaceJogo.setVisible(true);
+        }
+        if (evento.getSource() == botaoDificuldade2) {
+            setarPercepcao = 2;
+            InterfaceJogo interfaceJogo = new InterfaceJogo();
+            interfaceJogo.setVisible(true);
+        }
+        if (evento.getSource() == botaoDificuldade3) {
+            setarPercepcao = 1;
+            InterfaceJogo interfaceJogo = new InterfaceJogo();
+            interfaceJogo.setVisible(true);
+        }
     }
 }

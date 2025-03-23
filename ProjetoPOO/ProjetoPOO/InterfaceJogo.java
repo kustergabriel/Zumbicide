@@ -10,6 +10,13 @@ public class InterfaceJogo extends JFrame {
     private Mapa mapa1;  // Agora não cria diretamente em linha, apenas declara
     private Entidades[][] mapa2;
 
+    ImageIcon jogadorIcon = carregarImagem ("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/imagemJogador.jpg");
+    ImageIcon bauIcon = carregarImagem ("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/imagemBau.jpg");
+    ImageIcon zumbiNormalIcon = carregarImagem("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/zumbiNormal.jpg");
+    ImageIcon zumbiRastejanteIcon = carregarImagem("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/zumbiRastajante.jpg");
+    ImageIcon zumbiGiganteIcon = carregarImagem("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/zumbiBoss.jpg");
+    ImageIcon zumbiCorredorIcon = carregarImagem("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/zumbiCorredor.jpg");
+
     //CONSTRUTOR
     InterfaceJogo() {
         int x_local = 0;
@@ -26,46 +33,46 @@ public class InterfaceJogo extends JFrame {
         setLayout(grid);
         
 
-
-        //ImageIcon jogadorIcon = new ImageIcon (getClass().getResource());
-    ImageIcon bauIcon = carregarImagem ("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/imagemBau.jpg");
-    ImageIcon zumbiNormalIcon = carregarImagem("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/zumbiNormal.jpg");
-    ImageIcon zumbiRastejanteIcon = carregarImagem("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/zumbiRastajante.jpg");
-    ImageIcon zumbiGiganteIcon = carregarImagem("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/zumbiBoss.jpg");
-    ImageIcon zumbiCorredorIcon = carregarImagem("C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/zumbiNormal.jpg");
-
         for (int i = 0; i < tamanho; i++) {
             for (int j = 0; j < tamanho; j++) {
                 botoes[i][j] = new JButton();
                 
                 if (mapa2[i][j] instanceof Jogador) {
-                     botoes[i][j].setText("P");
+                    botoes[i][j].setText("P");
+                    botoes[i][j].setIcon(jogadorIcon);
                     x_local = i;
                     y_local = j;
                 } else if (mapa2[i][j] instanceof Parede) {
                     botoes[i][j].setText("W");
+                    
                 } else if (mapa2[i][j] instanceof Bau) {
+                    botoes[i][j].setText("B");
                     botoes[i][j].setIcon(bauIcon);
                 } else if (mapa2[i][j] instanceof ZumbiNormal) {
+                    botoes[i][j].setText("Z");
                     botoes[i][j].setIcon(zumbiNormalIcon);
                 } else if (mapa2[i][j] instanceof ZumbiRastejante) {
+                    //botoes[i][j].setText("ZR");
                     botoes[i][j].setIcon(zumbiRastejanteIcon);
+                    if (!Mapa.debug) {
+                        botoes[i][j].setIcon(null);
+                    }
                 } else if (mapa2[i][j] instanceof ZumbiGigante) {
-                    botoes[i][j].setIcon(zumbiGiganteIcon );
+                    botoes[i][j].setText("ZG");
+                    botoes[i][j].setIcon(zumbiGiganteIcon);
                 } else if (mapa2[i][j] instanceof ZumbiCorredor) {
+                    botoes[i][j].setText("ZC");
                     botoes[i][j].setIcon(zumbiCorredorIcon);
                 } else {
-                    botoes[i][j].setText(" ");;
+                    botoes[i][j].setText(" ");
                 }
 
                 if(botoes[i][j].getText().equals("W")){
                         botoes[i][j].setEnabled(false); //Desabilitar paredes
                     }
                     
-                    
                 //CUSTOMIZAR BOTOES
                 botoes[i][j].setBorder(BorderFactory.createLineBorder(Color.PINK));   
-                definirCor(botoes[i][j], botoes[i][j].getText()); //Deixar nao transparente
 
                 final int x = i;
                 final int y = j;
@@ -85,65 +92,20 @@ public class InterfaceJogo extends JFrame {
                     botoes[i][j].setVisible(false);
                 }
                 add(botoes[i][j]);
-
             }
         }
+        
         //VISUALIZAR APENAS A MESMA LINHA E COLUNA ATE A PAREDE
         if (!Mapa.debug) { 
-            for (int j = y_local; j < tamanho; j++) { //direita
-                if (mapa2[x_local][j] instanceof Parede) break;
-                botoes[x_local][j].setVisible(true);
-            }
-            for (int j = y_local; j >= 0; j--) { //esquerda
-                if (mapa2[x_local][j] instanceof Parede) break;
-                botoes[x_local][j].setVisible(true);
-            }
-
-            //Revelar coluna
-            for (int i = x_local; i < tamanho; i++) { //baixo
-                if (mapa2[i][y_local] instanceof Parede) break;
-                botoes[i][y_local].setVisible(true);
-            }
-            for (int i = x_local; i >= 0; i--) { //cima
-                if (mapa2[i][y_local] instanceof Parede) break;
-                botoes[i][y_local].setVisible(true);
-            }
+            setPlayerVision(botoes, x_local, y_local);
         }
     }
-
-
-
-    //MÉTODOS
-
-    public void matarZumbi(int x, int y) {
-    if (mapa2[x][y] instanceof ZumbiNormal) {
-        mapa2[x][y] = null; // Remove o zumbi do mapa
-        botoes[x][y].setIcon(null); 
-        botoes[x][y].setText("");   
-        botoes[x][y].revalidate();
-        botoes[x][y].repaint();
-    }
-}
-
-
+    //METODOS
     private ImageIcon carregarImagem(String caminho) {
     ImageIcon icon = new ImageIcon(caminho);
-    Image img = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+    Image img = icon.getImage().getScaledInstance(80, 70, Image.SCALE_SMOOTH);
     return new ImageIcon(img);
 }
-    private void definirCor(JButton botao, String tipo) {
-        switch (tipo) {
-            case "W": botao.setBackground(Color.GRAY); break;
-            case "P": botao.setBackground(Color.BLUE); break;
-            case "B": botao.setBackground(Color.YELLOW); break;
-            case "ZR": botao.setBackground(Color.ORANGE); break;
-            case "ZC": botao.setBackground(Color.RED); break;
-            case "Z": botao.setBackground(Color.GREEN); break;
-            case "ZG": botao.setBackground(Color.MAGENTA); break;
-            default: botao.setBackground(Color.WHITE); break;
-        }
-        botao.setOpaque(true);
-    }
 
     public void atualizarTabuleiro(Entidades[][] tabuleiro) {
         int x_local = 0;
@@ -152,61 +114,81 @@ public class InterfaceJogo extends JFrame {
             for (int j = 0; j < tamanho; j++) {
                 if (tabuleiro[i][j] instanceof Jogador) {
                     botoes[i][j].setText("P");
-                    definirCor(botoes[i][j], "P");
+                    botoes[i][j].setIcon(jogadorIcon);
                     x_local = i;
                     y_local = j;
+                    
                 } else if (tabuleiro[i][j] instanceof Parede) {
                     botoes[i][j].setText("W");
-                    definirCor(botoes[i][j], "W");
+                    
                 } else if (tabuleiro[i][j] instanceof Bau) {
                     botoes[i][j].setText("B");
-                    definirCor(botoes[i][j], "B");
+                    
                 } else if (tabuleiro[i][j] instanceof ZumbiNormal) {
                     botoes[i][j].setText("Z");
-                    definirCor(botoes[i][j], "Z");
+                    
                 } else if (tabuleiro[i][j] instanceof ZumbiRastejante) {
-                    botoes[i][j].setText("ZR");
-                    definirCor(botoes[i][j], "ZR");
+                    //botoes[i][j].setText("ZR");
+                    
+                    
                 } else if (tabuleiro[i][j] instanceof ZumbiGigante) {
                     botoes[i][j].setText("ZG");
-                    definirCor(botoes[i][j], "ZG");
+                    
                 } else if (tabuleiro[i][j] instanceof ZumbiCorredor) {
                     botoes[i][j].setText("ZC");
-                    definirCor(botoes[i][j], "ZC");
+                    
                 } else {
                     botoes[i][j].setText(" ");
-                    definirCor(botoes[i][j], " "); // Espaço vazio
-
+                    botoes[i][j].setIcon(null);
                 }
 
                 if (!Mapa.debug) {
                     botoes[i][j].setVisible(false);
-                }
-              
+                }          
             }
         }
         if (!Mapa.debug) {
-            //AQUI TEM QUE COLOCAR O BOTAO DE DEBUG
-            for (int j = y_local; j < tamanho; j++) { //direita
-                if (tabuleiro[x_local][j] instanceof Parede) break;
-                botoes[x_local][j].setVisible(true);
-    
+            setPlayerVision(botoes, x_local, y_local);
+        }
+    }
 
+    public void setPlayerVision(JButton[][] botoes, int x_local, int y_local) {
+            for (int j = y_local; j < tamanho; j++) { //direita
+                if (mapa2[x_local][j] instanceof Vazio || mapa2[x_local][j] instanceof ZumbiRastejante || mapa2[x_local][j] instanceof Jogador) {
+                    botoes[x_local][j].setVisible(true);
+                } else {
+                    botoes[x_local][j].setVisible(true);
+                    break;
+                }
             }
             for (int j = y_local; j >= 0; j--) { //esquerda
-                if (tabuleiro[x_local][j] instanceof Parede) break;
-                botoes[x_local][j].setVisible(true);
+                if (mapa2[x_local][j] instanceof Vazio || mapa2[x_local][j] instanceof ZumbiRastejante || mapa2[x_local][j] instanceof Jogador) {
+                    botoes[x_local][j].setVisible(true);
+                } else {
+                    botoes[x_local][j].setVisible(true);
+                    break;
+                }
             }
 
             //Revelar coluna
+            // Revelar coluna para baixo
             for (int i = x_local; i < tamanho; i++) { //baixo
-                if (tabuleiro[i][y_local] instanceof Parede) break;
-                botoes[i][y_local].setVisible(true);
+                if (mapa2[i][y_local] instanceof Vazio || mapa2[i][y_local] instanceof ZumbiRastejante || mapa2[i][y_local] instanceof Jogador) {
+                    botoes[i][y_local].setVisible(true);
+                } else {
+                    botoes[i][y_local].setVisible(true);
+                    break;
+                }
             }
+
+            // Revelar coluna para cima
             for (int i = x_local; i >= 0; i--) { //cima
-                if (tabuleiro[i][y_local] instanceof Parede) break;
-                botoes[i][y_local].setVisible(true);
+                if (mapa2[i][y_local] instanceof Vazio || mapa2[i][y_local] instanceof ZumbiRastejante || mapa2[i][y_local] instanceof Jogador) {
+                    botoes[i][y_local].setVisible(true);
+                } else {
+                    botoes[i][y_local].setVisible(true);
+                    break;
+                }
             }
-        }
     }
 }
