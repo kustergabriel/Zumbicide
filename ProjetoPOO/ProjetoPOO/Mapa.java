@@ -143,7 +143,7 @@ public class Mapa extends Entidades {
                         int dadoBau = (int) (Math.random() * 3 + 1);
                         // Aqui a gente encontra um zumbi rastejante no bau
                         if (dadoBau <= player.getPercepcao()){
-                            JOptionPane.showMessageDialog(null, "Parabens, tu ta jogando no facil, desviou do ataque do zumbi!");                        
+                            JOptionPane.showMessageDialog(null, "Parabens, desviou do ataque do zumbi!");                        
                         }
                         else if (player.getTacoBasebol() == true) { 
                             player.setVida(player.getVida() - 1);
@@ -221,7 +221,6 @@ public class Mapa extends Entidades {
     }
 
     // ------------METODOS DA BATALHA (SOCORRO)---------
-
     public void interfaceBatalha(Jogador player, Entidades zumbi) {
         JFrame janela = new JFrame();
 
@@ -287,6 +286,7 @@ public class Mapa extends Entidades {
         if(zumbi instanceof ZumbiGigante){
             JOptionPane.showMessageDialog(null, "Tem certeza que tu acha que vai dar dano com a mao?");
             jogadorDaDanoArma(zumbi, janela);
+            break;
         }
 
         if (dado == 6){
@@ -317,7 +317,7 @@ public class Mapa extends Entidades {
             }
 
             if (dadoPercecao <= player.getPercepcao()) {
-                JOptionPane.showMessageDialog(null, "Parabens, tu ta jogando no facil, desviou do ataque do zumbi!");
+                JOptionPane.showMessageDialog(null, "Parabens, desviou do ataque do zumbi!");                        
             } else {
                 int danoZumbi = zumbiCast.getDano();
                 player.setVida(player.getVida() - danoZumbi);
@@ -353,7 +353,15 @@ public class Mapa extends Entidades {
             if (zumbi instanceof ZumbiCorredor) {
                 JOptionPane.showMessageDialog(null, "Esquece, tu nunca vai mata ele com uma arma!");
                 jogadorDaDanoMao(zumbi, janela);
+                break;
             }
+            if (zumbi instanceof ZumbiGigante && player.getMunicao() < 0) {
+                // Aqui tem que alterar para sei la, poder fugir
+                JOptionPane.showMessageDialog(null, "Tu ta mto loco, morresse ne patrao!");
+
+            }
+
+
             if (player.getArma() == true && player.getMunicao() > 0) {
                 int vidaZumbi = zumbiCast.getVida();
                 zumbiVidaPerdida = vidaZumbi - player.getDanoArma();
@@ -406,7 +414,6 @@ public class Mapa extends Entidades {
         
         // Atualizando a interface gráfica
         interfaceJogo.atualizarTabuleiro(tabuleiro);
-    
     }
 }
 
