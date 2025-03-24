@@ -1,4 +1,4 @@
-P W N N N N N Z N N
+P W N N Z N N Z N N
 N W N W R N N B N N
 N W N W N N W W N Z
 N W N W N N W W N N

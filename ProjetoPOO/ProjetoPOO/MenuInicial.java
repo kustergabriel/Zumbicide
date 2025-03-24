@@ -84,16 +84,19 @@ public class MenuInicial extends JFrame implements ActionListener {
             setarPercepcao = 3;
             InterfaceJogo interfaceJogo = new InterfaceJogo();
             interfaceJogo.setVisible(true);
+            setVisible(false);
         }
         if (evento.getSource() == botaoDificuldade2) {
             setarPercepcao = 2;
             InterfaceJogo interfaceJogo = new InterfaceJogo();
             interfaceJogo.setVisible(true);
+            setVisible(false);
         }
         if (evento.getSource() == botaoDificuldade3) {
             setarPercepcao = 1;
             InterfaceJogo interfaceJogo = new InterfaceJogo();
             interfaceJogo.setVisible(true);
+            setVisible(false);
         }
     }
 }

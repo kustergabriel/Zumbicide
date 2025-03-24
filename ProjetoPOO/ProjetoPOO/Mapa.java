@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.*;
@@ -18,10 +16,10 @@ public class Mapa extends Entidades {
     private InterfaceJogo interfaceJogo; // Para armazenar a referência da InterfaceJogo
     private String mapa;
     private Jogador player = new Jogador();
-    private int zumbiVidaPerdida;
-    private int vidaZumbiRastejante = 2;
     //Criar a lista com os itens do bau
     private ArrayList<String> itens = new ArrayList<String>();
+    private int contadorZumbis = 10;
+
 
     Mapa(InterfaceJogo interfaceJogo) {
         this.interfaceJogo = interfaceJogo; // Inicializa a variável
@@ -93,14 +91,20 @@ public class Mapa extends Entidades {
     //MÉTODOS
     private String EscolherMapa() {
         int num_aleatorio = (int)(Math.random() * 3) + 1; // Gera um valor aleatório 1 a 3
-        if(num_aleatorio == 1) {
-            mapa = "ProjetoPOO/Mapas/Mapa_1.txt";
-        } else if (num_aleatorio == 2) {
-            mapa = "ProjetoPOO/Mapas/Mapa_2.txt";
-        } else {
-            mapa = "ProjetoPOO/Mapas/Mapa_3.txt";
+        try{
+            if(num_aleatorio == 1) {
+                mapa = "ProjetoPOO/Mapas/Mapa_1.txt";
+            } else if (num_aleatorio == 2) {
+                mapa = "ProjetoPOO/Mapas/Mapa_2.txt";
+            } else {
+                mapa = "ProjetoPOO/Mapas/Mapa_3.txt";
+            }
+
+            return mapa;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return "ERRO AO LER O MAPA";
         }
-        return mapa;
     }
 
     public boolean moverJogador(int novaX, int novaY) {
@@ -115,8 +119,9 @@ public class Mapa extends Entidades {
                     //Atualiza x,y do jogador
                     player.setJogador_X(novaX);
                     player.setJogador_Y(novaY);
-
+                  
                     tabuleiro[novaX][novaY] = player;
+                    
                     return true;
 
                 //TESTE PARA VER A POSIÇÃO É UM BAU E PEGAR OS ITENS
@@ -126,7 +131,6 @@ public class Mapa extends Entidades {
                 
                     //Downcasting para conseguir fazer o jogador receber o item do bau
                     Jogador odeio_java = (Jogador) tabuleiro[player.getJogador_X()][player.getJogador_Y()];   //Downcasting, odeio Java
-                    odeio_java.setTacoBasebol();
                     //Confia em mim, isso é um jogador compilador do crl
 
                     if (item.equals("Taco")) {
@@ -142,15 +146,23 @@ public class Mapa extends Entidades {
                         JOptionPane.showMessageDialog(null, "O jogador Recebeu uma arma com duas municoes neste bau.");
                         int dadoBau = (int) (Math.random() * 3 + 1);
                         // Aqui a gente encontra um zumbi rastejante no bau
+                        JOptionPane.showMessageDialog(null, "Você abriu o bau mas havia um zumbi rastejante escondido ");
+                        
                         if (dadoBau <= player.getPercepcao()){
-                            JOptionPane.showMessageDialog(null, "Parabens, desviou do ataque do zumbi!");                        
+                            JOptionPane.showMessageDialog(null, "Parabens, desviou e logo em seguida matou o zumbi!");                        
                         }
                         else if (player.getTacoBasebol() == true) { 
                             player.setVida(player.getVida() - 1);
-                            JOptionPane.showMessageDialog(null, "Tu matou o zumbi com um ataque, mto forte!!!");                        
+                            JOptionPane.showMessageDialog(null, "Tu matou o zumbi com um ataque, muito forte!");
+                            interfaceJogo.atualizarVidaPanel(player.getVida());                       
                         } else {
-                            JOptionPane.showMessageDialog(null, "Perdeu 2 de vida mas pelo menos matou o zumbi! Vida Atual: "+ player.getVida());                        
-                            player.setVida(player.getVida() - 2);               
+                            JOptionPane.showMessageDialog(null, "Perdeu 2 de vida mas pelo menos matou o zumbi!");                        
+                            player.setVida(player.getVida() - 2); 
+                            interfaceJogo.atualizarVidaPanel(player.getVida()); 
+                        }
+                        if (player.getVida() <= 0) {
+                            JOptionPane.showMessageDialog(null, "Morreuu!");
+                            telaDeReinicio();                        
                         }
                     }
                     //Coloca vazio na posição anterior
@@ -164,7 +176,7 @@ public class Mapa extends Entidades {
 
                 //SE NÃO FOR VAZIO OU BAU, É ZUMBI, POIS AS PAREDES ESTÃO DESABILITADAS
                 } else if (!(tabuleiro[novaX][novaY] instanceof Jogador)){
-                    interfaceBatalha(player, tabuleiro[novaX][novaY] );
+                    batalhaEmTurnos(player, tabuleiro[novaX][novaY]);
 
                     if(!fugirDaBatalha) {
                         //Coloca vazio na posição anterior
@@ -182,8 +194,43 @@ public class Mapa extends Entidades {
                 }
             }
         return false;    
-    }
-    
+    }  
+        
+        public void MoverZumbis(){
+            for (int i = 0; i < tamanho; i++){
+                  for (int j = 0;j < tamanho;j++){
+                    
+                    // Verifica se tem um zumbi na posiçao atual
+                    if(tabuleiro[i][j] instanceof Zumbi){
+                        Zumbi zumbi = (Zumbi) tabuleiro[i][j];
+
+                         if (zumbi instanceof ZumbiGigante) {//se for o zumbi giga pula para ao proximo zumbi
+                            continue; 
+                }
+                            // pega a posiçao do jogador
+                     int jogadorX = player.getJogador_X();
+                     int jogadorY = player.getJogador_Y();
+                        
+                        // movimento do zumbi em direçao ao jogador
+                     int dx = Integer.compare(jogadorX, i);// Retorna -1(cima), 0(n movimenta) ou 1(baixo) dependendo da posição do jogador
+                     int dy = Integer.compare(jogadorY, j);
+                    //Se  esta acima do zumbi (jogadorX < i), então dx sera -1 (movimento para cima).
+                    // Determina a nova posição do zumbi
+                     int novoX = i + dx;
+                     int novoY = j + dy;
+
+                        // VERIFICA SE A POSIÇAO ESTA DENTRO DOS LIMITES DO TABULEIRO E SE N TEM  OUTRO ZUMBI NA POSIÇAO OU PAREDE OU JOGADOR 
+                     if(novoX >= 0 && novoX < tamanho && novoY >=0 && novoY < tamanho && tabuleiro[novoX][novoY] instanceof Vazio){
+                     tabuleiro[i][j] = new Vazio();
+                     tabuleiro[novoX][novoY]= zumbi;
+                        
+                        }
+                    }                    
+                  }  
+
+            }
+
+        }
 
     public void exibirMapa() {
         for (int i = 0; i < tamanho; i++) {
@@ -221,199 +268,173 @@ public class Mapa extends Entidades {
     }
 
     // ------------METODOS DA BATALHA (SOCORRO)---------
-    public void interfaceBatalha(Jogador player, Entidades zumbi) {
-        JFrame janela = new JFrame();
-
-    JLabel msgEscolhacomoatacar = new JLabel("Escolha como atacar!"); 
-    msgEscolhacomoatacar.setBounds(400, 50, 200, 30); 
-
-    JButton botaoRevolver = new JButton("--REVOLVER--");
-    botaoRevolver.setBounds(300, 350, 200, 40);
-    botaoRevolver.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            jogadorDaDanoArma(zumbi, janela);
-        }
-    });
-
-    JButton botaoFugir = new JButton("--FUGIR--");
-    botaoFugir.setBounds(80, 350, 200, 40);
-    botaoFugir.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            Mapa.fugirDaBatalha = false;
-            janela.dispose(); // Fechar a janela da batalha
-        }
-    });
-
-    JButton botaoSoco = new JButton("--SOCO--");
-    botaoSoco.setBounds(520, 350, 200, 40);
-    botaoSoco.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            jogadorDaDanoMao(zumbi, janela);
-        }
-    });
-
-    JButton botaoAtadura = new JButton("--ATADURA--");
-    botaoAtadura.setBounds(410, 400, 200, 40); // Mudando posição para evitar sobreposição
-    botaoAtadura.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            player.regeneraVida();
-            JOptionPane.showMessageDialog(null, "Vida do jogador agora: " + player.getVida());
-        }
-    });
-
-    // Adições de Componentes
-    janela.add(msgEscolhacomoatacar);
-    janela.add(botaoRevolver);
-    janela.add(botaoSoco);
-    janela.add(botaoAtadura);
-    janela.add(botaoFugir);
-    janela.setLayout(null);
-    janela.setBounds(225, 150, 900, 500);
-    janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    janela.setVisible(true);
-}
+    public void batalhaEmTurnos(Jogador player, Entidades zumbi) {
+        JFrame janela = new JFrame("Batalha");
+        Zumbi zumbiCast = (Zumbi) zumbi;
+        JOptionPane.showMessageDialog(null, "Batalha contra um: " + zumbi);
     
-    public void jogadorDaDanoMao (Entidades zumbi, JFrame janela) {
-        Zumbi zumbiCast = (Zumbi) zumbi;
-        System.out.println(player.getPercepcao());
-        JOptionPane.showMessageDialog(null, "Batalha contra um " + zumbi);
-        int dadoPercecao = (int) (Math.random () * 3 + 1); 
+        while (player.getVida() > 0 && zumbiCast.getVida() > 0) {
+            int escolha;
+            // Interface para escolha do ataque
+            if(player.getTacoBasebol() == false) {
+                escolha = JOptionPane.showOptionDialog(
+                    null, "Escolha sua ação:", "Batalha",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                    null, new Object[]{"Soco", "Revolver", "Atadura", "Fugir"}, "Soco"); 
+            } else {
+                escolha = JOptionPane.showOptionDialog(
+                null, "Escolha sua ação:", "Batalha",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                null, new Object[]{"Taco", "Revolver", "Atadura", "Fugir"}, "Taco"); 
+            }
+            
+            // Ação do jogador
+            switch (escolha) {
+                case 0: // Soco
+                    atacarComMao(player, zumbiCast);
+                    break;
+                case 1: // Revolver
+                    atacarComArma(player, zumbiCast);
+                    break;
+                case 2: // Atadura
+                    if (player.getAtadura() == true){
+                    JOptionPane.showMessageDialog(null, "Vida Regenerada!");
+                    player.regeneraVida();
+                    interfaceJogo.atualizarVidaPanel(player.getVida());
+                    break;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Tu nao tem atadura safadinho!!!");
+                    }
+                    break;
+                case 3: // Fugir
+                    JOptionPane.showMessageDialog(null, "Você fugiu da batalha!");
+                    janela.dispose();
+                    return; // Sai do método
+            }
+            
+            // Se o zumbi morreu, encerrar batalha
+            if (zumbiCast.getVida() <= 0) {
+                JOptionPane.showMessageDialog(null, "Zumbi morto!");
+                janela.dispose();
+                contadorZumbis--;
+                interfaceJogo.atualizarContadorZumbis(getContadorZumbis());
 
-        do { 
+                if (zumbiCast instanceof ZumbiGigante && getContadorZumbis() == 0) {
+                    JOptionPane.showMessageDialog(null, "Você venceu o jogo! Todos os zumbis foram derrotados.");
+                    telaDeReinicio();  // Opcional: Pode reiniciar ou dar a opção de novo jogo aqui
+                }
+
+                if (getContadorZumbis() == 0) {
+                    JOptionPane.showMessageDialog(null, "Ba, tu nao matasse o zumbi gigante por ultimo, mas mesmo assim ganhasse, Parabens");
+                    telaDeReinicio();  // Opcional: Pode reiniciar ou dar a opção de novo jogo aqui
+                }
+                for (int i = 0; i < tamanho; i++) {
+                    for (int j = 0; j < tamanho; j++) {
+                        if (tabuleiro[i][j] == zumbiCast) {
+                            tabuleiro[i][j] = new Vazio();  // Zumbi morreu, substitui por Vazio
+                        }
+                    }
+                }
+                // Atualizando a interface gráfica
+                interfaceJogo.atualizarTabuleiro(tabuleiro);
+                break;
+            }
+            
+            // Turno do zumbi
+            ataqueDoZumbi(player, zumbiCast);
+            
+            // Se o jogador morreu, encerrar batalha
+            if (player.getVida() <= 0) {
+                JOptionPane.showMessageDialog(null, "Jogo encerrado, voce morreu");
+                telaDeReinicio();
+                janela.dispose();
+                break;
+            }
+        }
+    }
+
+    // Aqui se for zumbi gigante nao pode dar dano na mao
+    private void atacarComMao(Jogador player, Zumbi zumbi) {
+
+        if (zumbi instanceof ZumbiGigante) {
+            JOptionPane.showMessageDialog(null, "Esquece, tu nunca vai matar um zumbi gigante com um taquinhozinho!");
+            return;
+        }
+
         int dado = (int) (Math.random() * 6 + 1);
-        
-
-        if(zumbi instanceof ZumbiGigante){
-            JOptionPane.showMessageDialog(null, "Tem certeza que tu acha que vai dar dano com a mao?");
-            jogadorDaDanoArma(zumbi, janela);
-            break;
+        if (dado == 6) {
+            zumbi.setVida(Math.max(zumbi.getVida() - 3, 0));
+            JOptionPane.showMessageDialog(null, "Ataque crítico! O zumbi perdeu 3 de vida! Vida do zumbi: " + zumbi.getVida());
+        } else if (player.getTacoBasebol()) {
+            zumbi.setVida(Math.max(zumbi.getVida() - player.getDanoTacoBasebol(), 0));
+            JOptionPane.showMessageDialog(null, "Ataque com taco! Vida do zumbi: " + zumbi.getVida());
+        } else {
+            zumbi.setVida(Math.max(zumbi.getVida() - player.getDano(), 0));
+            JOptionPane.showMessageDialog(null, "Soco no zumbi! Vida do zumbi: " + zumbi.getVida());
+        }
+    }
+    // Aqui se for zumbi corredor nao pode dar dano na arma
+    private void atacarComArma(Jogador player, Zumbi zumbi) {
+        if (zumbi instanceof ZumbiCorredor) {
+            JOptionPane.showMessageDialog(null, "Esquece, tu nunca vai matar um zumbi corredor com uma arma!");
+            return;
+        }
+        if (player.getArma() == true && player.getMunicao() > 0) {
+            zumbi.setVida(Math.max(zumbi.getVida() - player.getDanoArma(), 0));
+            player.setMunicao(-1);
+            JOptionPane.showMessageDialog(null, "Tiro na cabesss do zumbi! Vida do Zumbi: " + zumbi.getVida() + " | Municao: " + player.getMunicao());
+        } else if (player.getArma() == true) {
+            JOptionPane.showMessageDialog(null, "Acabaram as tuas municoes padrinho, se ferrou!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Tu nem tem uma arma, meu!");
+        }
+    }
+    private void ataqueDoZumbi(Jogador player, Zumbi zumbi) {
+        int dadoPercepcao = (int) (Math.random() * 3 + 1);
+        if (dadoPercepcao < player.getPercepcao()) {
+            JOptionPane.showMessageDialog(null, "Você desviou do ataque do zumbi!");
+        } else {
+            player.setVida(Math.max(player.getVida() - zumbi.getDano(), 0));
+            JOptionPane.showMessageDialog(null, "O zumbi atacou! Dano Do Zumbi " + zumbi.getDano());
+            interfaceJogo.atualizarVidaPanel(player.getVida());
         }
 
-        if (dado == 6){
-            // Aqui o jogador da um dano critico!
-            int vidaZumbi = zumbiCast.getVida(); // Pegamos a vida do zumbi e tiramos dois, independente se for com a mao ou taco
-            zumbiVidaPerdida = vidaZumbi - 3;
-            zumbiCast.setVida(Math.max(zumbiVidaPerdida, 0)); // Math.max para nunca passar o valor de zero
-            JOptionPane.showMessageDialog(null, "Soco crítico! O zumbi perdeu 3 de vida.");
-
-        } else if (player.getTacoBasebol() == true) { // Verificar isso, por que na teoria no jogador eu ja verifico se eu tenho um taco
-                int vidaZumbi = zumbiCast.getVida();
-                zumbiVidaPerdida = vidaZumbi - player.getDanoTacoBasebol();
-                zumbiCast.setVida(Math.max(zumbiVidaPerdida, 0));
-                JOptionPane.showMessageDialog(null, "Ataque com taco! Vida do zumbi agora: " + zumbiCast.getVida());
-            } 
-                else {
-                    int vidaZumbi = zumbiCast.getVida();
-                    zumbiVidaPerdida = vidaZumbi - player.getDano();
-                    zumbiCast.setVida(Math.max(zumbiVidaPerdida, 0));
-                    JOptionPane.showMessageDialog(null, "Soco no zumbi! Vida agora: " + zumbiCast.getVida());
-            }
-
-            if (zumbiCast.getVida() <= 0) {
-                JOptionPane.showMessageDialog(null, "Zumbi morto!");
-                janela.dispose(); // Fechar a janela da batalha
-                //interfaceJogo.matarZumbi();
-                break;
-            }
-
-            if (dadoPercecao <= player.getPercepcao()) {
-                JOptionPane.showMessageDialog(null, "Parabens, desviou do ataque do zumbi!");                        
-            } else {
-                int danoZumbi = zumbiCast.getDano();
-                player.setVida(player.getVida() - danoZumbi);
-                JOptionPane.showMessageDialog(null, "O zumbi atacou, o jogador perdeu " +zumbiCast.getDano() + " de vida. Vida do jogador: " + player.getVida());
-            }
-            
-            if (player.getVida() <= 0) {
-                JOptionPane.showMessageDialog(null, "Cabo o jogo padrinho, tu morreu");
-                janela.dispose(); // Fechar a janela da batalha
-                break;
-            }
-            
-        } while (zumbiCast.getVida() > 0 && player.getVida() > 0);
-
-        // Atualizando o tabuleiro para remover o zumbi
-        for (int i = 0; i < tamanho; i++) {
-            for (int j = 0; j < tamanho; j++) {
-                if (tabuleiro[i][j] == zumbiCast) {
-                    tabuleiro[i][j] = new Vazio();  // Zumbi morreu, substitui por Vazio
-                }
-            }
-        }
-        // Atualizando a interface gráfica
-        interfaceJogo.atualizarTabuleiro(tabuleiro);
     }
 
-    public void jogadorDaDanoArma (Entidades zumbi, JFrame janela) {
-        Zumbi zumbiCast = (Zumbi) zumbi;
-        int dadoPercecao = (int) (Math.random () * 3 + 1); 
-        JOptionPane.showMessageDialog(null, "Batalha contra um " + zumbi);
-
-        do {
-            if (zumbi instanceof ZumbiCorredor) {
-                JOptionPane.showMessageDialog(null, "Esquece, tu nunca vai mata ele com uma arma!");
-                jogadorDaDanoMao(zumbi, janela);
-                break;
+    private void telaDeReinicio() {
+        int escolha;
+            escolha = JOptionPane.showOptionDialog(
+            null, "Escolha sua opcao:", "Tela de Morte",
+            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+            null, new Object[]{"Reiniciar", "Novo Jogo", "Sair"}, "Sair"); 
+                
+            // Ação do jogador
+            switch (escolha) {
+                case 0: // Reiniciar Jogo
+                jogadorReiniciarJogo();
+                    break;
+                case 1: // Novo Jogo
+                jogadorNovoJogo();
+                    break;
+                case 2: // Atadura
+                    System.exit(0); // Fechar todo o problema
             }
-            if (zumbi instanceof ZumbiGigante && player.getMunicao() < 0) {
-                // Aqui tem que alterar para sei la, poder fugir
-                JOptionPane.showMessageDialog(null, "Tu ta mto loco, morresse ne patrao!");
-
-            }
-
-
-            if (player.getArma() == true && player.getMunicao() > 0) {
-                int vidaZumbi = zumbiCast.getVida();
-                zumbiVidaPerdida = vidaZumbi - player.getDanoArma();
-                zumbiCast.setVida(Math.max(zumbiVidaPerdida, 0)); // Math.max para nunca passar o valor de zero
-                JOptionPane.showMessageDialog(null, "Tu deu um tiro no zumbi e ele perdeu " + player.getDanoArma() + " de vida!");
-                player.setMunicao(-1);
-                JOptionPane.showMessageDialog(null, "Municao: " + player.getMunicao());
-
-            } else if (player.getArma() == false) {
-                JOptionPane.showMessageDialog(null, "Tu nem tem uma arma vacilao!!!");
-                jogadorDaDanoMao(zumbi,janela);
-                break;
-            } else {
-                JOptionPane.showMessageDialog(null, "Acabaram suas municoes meu amigo, se ferrou!");
-                jogadorDaDanoMao(zumbi,janela);
-                break;
-            }
-
-            if (zumbiCast.getVida() <= 0) {
-                JOptionPane.showMessageDialog(null, "Zumbi morto!");
-                janela.dispose(); // Fechar a janela da batalha
-                //interfaceJogo.matarZumbi();
-                break;
-            }
-
-            if (dadoPercecao <= player.getPercepcao()) {
-                JOptionPane.showMessageDialog(null, "Parabens, tu ta jogando no facil, desviou do ataque do zumbi!");
-            } else {
-                int danoZumbi = zumbiCast.getDano();
-                player.setVida(player.getVida() - danoZumbi);
-                JOptionPane.showMessageDialog(null, "O zumbi atacou, o jogador perdeu " +zumbiCast.getDano() + " de vida. Vida do jogador: " + player.getVida());
-            }
-            
-            if (player.getVida() <= 0) {
-                JOptionPane.showMessageDialog(null, "Cabo o jogo padrinho, tu morreu");
-                janela.dispose(); // Fechar a janela da batalha
-                break;
-            }
-        
-        } while (zumbiCast.getVida() > 0 && player.getVida() > 0);  
-        
-        // Atualizando o tabuleiro para remover o zumbi
-        for (int i = 0; i < tamanho; i++) {
-            for (int j = 0; j < tamanho; j++) {
-                if (tabuleiro[i][j] == zumbiCast) {
-                    tabuleiro[i][j] = new Vazio();  // Zumbi morreu, substitui por Vazio
-                }
-            }
-        }
-        
-        // Atualizando a interface gráfica
-        interfaceJogo.atualizarTabuleiro(tabuleiro);
     }
+    
+    private void jogadorReiniciarJogo() {
+        player.setVida(10);
+        interfaceJogo.atualizarVidaPanel(player.getVida());
+    }
+    
+    private void jogadorNovoJogo () {
+        InterfaceJogo interfaceJogo = new InterfaceJogo();
+        interfaceJogo.setVisible(true);
+    }
+
+
+    public int getContadorZumbis() {
+        return contadorZumbis;
+    }
+
 }
 

@@ -3,7 +3,7 @@ public class ZumbiRastejante extends Zumbi {
     // Zumbi Rastejante tem 1 de vida
 
    public ZumbiRastejante () {
-        super(2,2);
+        super(3,2);
     }
 
     @Override
