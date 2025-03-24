@@ -13,7 +13,7 @@ public class Mapa extends Entidades {
     public static boolean fugirDaBatalha = true;
     private final  int tamanho = 10;
     public  Entidades[][] tabuleiro = new Entidades[tamanho][tamanho];
-    private InterfaceJogo interfaceJogo; // Para armazenar a referência da InterfaceJogo
+    private InterfaceJogo interfaceJogo;
     private String mapa;
     private Jogador player = new Jogador();
     //Criar a lista com os itens do bau
@@ -22,7 +22,7 @@ public class Mapa extends Entidades {
 
 
     Mapa(InterfaceJogo interfaceJogo) {
-        this.interfaceJogo = interfaceJogo; // Inicializa a variável
+        this.interfaceJogo = interfaceJogo; 
         mapa = EscolherMapa();
 
         //Pegar a percepção (Dificuldade)
@@ -78,7 +78,7 @@ public class Mapa extends Entidades {
                             tabuleiro[i][j] = new ZumbiCorredor(); 
                             break;
                         default: 
-                            tabuleiro[i][j] = new Vazio(); // Espaço vazio
+                            tabuleiro[i][j] = new Vazio();
                     }
                 }
                 i++;
@@ -90,7 +90,7 @@ public class Mapa extends Entidades {
 
     //MÉTODOS
     private String EscolherMapa() {
-        int num_aleatorio = (int)(Math.random() * 3) + 1; // Gera um valor aleatório 1 a 3
+        int num_aleatorio = (int)(Math.random() * 3) + 1;
         try{
             if(num_aleatorio == 1) {
                 mapa = "ProjetoPOO/Mapas/Mapa_1.txt";
@@ -252,10 +252,10 @@ public class Mapa extends Entidades {
                 } else if (tabuleiro[i][j] instanceof Vazio){
                     System.out.print("X");
                 } else {
-                    System.out.print(" "); // Espaço vazio
+                    System.out.print(" ");
                 }
             }
-            System.out.println(); // Nova linha após cada linha do tabuleiro
+            System.out.println();
         }
     }
 
@@ -275,7 +275,6 @@ public class Mapa extends Entidades {
     
         while (player.getVida() > 0 && zumbiCast.getVida() > 0) {
             int escolha;
-            // Interface para escolha do ataque
             if(player.getTacoBasebol() == false) {
                 escolha = JOptionPane.showOptionDialog(
                     null, "Escolha sua ação:", "Batalha",
@@ -288,15 +287,15 @@ public class Mapa extends Entidades {
                 null, new Object[]{"Taco", "Revolver", "Atadura", "Fugir"}, "Taco"); 
             }
             
-            // Ação do jogador
+            // Escolha do botao
             switch (escolha) {
-                case 0: // Soco
+                case 0: // mao
                     atacarComMao(player, zumbiCast);
                     break;
-                case 1: // Revolver
+                case 1: // revorvi
                     atacarComArma(player, zumbiCast);
                     break;
-                case 2: // Atadura
+                case 2: // cura
                     if (player.getAtadura() == true){
                     JOptionPane.showMessageDialog(null, "Vida Regenerada!");
                     player.regeneraVida();
@@ -306,10 +305,10 @@ public class Mapa extends Entidades {
                         JOptionPane.showMessageDialog(null, "Tu nao tem atadura safadinho!!!");
                     }
                     break;
-                case 3: // Fugir
+                case 3: // fuga
                     JOptionPane.showMessageDialog(null, "Você fugiu da batalha!");
-                    janela.dispose();
-                    return; // Sai do método
+                    janela.dispose(); // sair da interface
+                    return; 
             }
             
             // Se o zumbi morreu, encerrar batalha
@@ -321,12 +320,12 @@ public class Mapa extends Entidades {
 
                 if (zumbiCast instanceof ZumbiGigante && getContadorZumbis() == 0) {
                     JOptionPane.showMessageDialog(null, "Você venceu o jogo! Todos os zumbis foram derrotados.");
-                    telaDeReinicio();  // Opcional: Pode reiniciar ou dar a opção de novo jogo aqui
+                    telaDeReinicio();  
                 }
 
                 if (getContadorZumbis() == 0) {
                     JOptionPane.showMessageDialog(null, "Ba, tu nao matasse o zumbi gigante por ultimo, mas mesmo assim ganhasse, Parabens");
-                    telaDeReinicio();  // Opcional: Pode reiniciar ou dar a opção de novo jogo aqui
+                    telaDeReinicio();  
                 }
                 for (int i = 0; i < tamanho; i++) {
                     for (int j = 0; j < tamanho; j++) {
@@ -335,7 +334,6 @@ public class Mapa extends Entidades {
                         }
                     }
                 }
-                // Atualizando a interface gráfica
                 interfaceJogo.atualizarTabuleiro(tabuleiro);
                 break;
             }
@@ -408,7 +406,7 @@ public class Mapa extends Entidades {
             JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
             null, new Object[]{"Reiniciar", "Novo Jogo", "Sair"}, "Sair"); 
                 
-            // Ação do jogador
+            // Escolha do botao
             switch (escolha) {
                 case 0: // Reiniciar Jogo
                 jogadorReiniciarJogo();
@@ -417,7 +415,7 @@ public class Mapa extends Entidades {
                 jogadorNovoJogo();
                     break;
                 case 2: // Atadura
-                    System.exit(0); // Fechar todo o problema
+                    System.exit(0); // Fechar todo o programa
             }
     }
     

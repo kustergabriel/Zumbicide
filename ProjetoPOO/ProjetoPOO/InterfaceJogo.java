@@ -7,7 +7,7 @@ public class InterfaceJogo extends JFrame {
     //ATRIBUTOS
     private int tamanho = 10;
     private JButton[][] botoes = new JButton[tamanho][tamanho];
-    private Mapa mapa1;  // Agora não cria diretamente em linha, apenas declara
+    private Mapa mapa1;  
     private Entidades[][] mapa2;
     private JLabel lblVida;
     private JLabel lblPercepcao;
@@ -24,7 +24,7 @@ public class InterfaceJogo extends JFrame {
     InterfaceJogo() {
         int x_local = 0;
         int y_local = 0;
-        mapa1 = new Mapa(this); // Passando 'this' (a instância de InterfaceJogo) para o construtor de Mapa
+        mapa1 = new Mapa(this);
         mapa2 = mapa1.getMapa();
 
         setTitle("ZUMBIS ODEIAM JAVA");
@@ -37,13 +37,13 @@ public class InterfaceJogo extends JFrame {
 
         // Painel para os status do jogador
         JPanel painelStatus = new JPanel();
-        lblVida = new JLabel("Vida: " + 10); //10 é a vida padrão
+        lblVida = new JLabel("Vida: " + 10); // 10 é a vida padrão
         lblPercepcao = new JLabel("Percepção: " + MenuInicial.setarPercepcao);
         lblContazumbis = new JLabel("Zumbis: " + mapa1.getContadorZumbis());
         painelStatus.add(lblVida);
         painelStatus.add(lblContazumbis);
         painelStatus.add(lblPercepcao);
-        painelPrincipal.add(painelStatus, BorderLayout.NORTH); //Aparece status no topo
+        painelPrincipal.add(painelStatus, BorderLayout.NORTH); // Aparece status no topo
 
         //Painel para a matriz de botões
         JPanel painelJogo = new JPanel(new GridLayout(10, 10));
@@ -205,7 +205,6 @@ public class InterfaceJogo extends JFrame {
             }
 
             //Revelar coluna
-            // Revelar coluna para baixo
             for (int i = x_local; i < tamanho; i++) { //baixo
                 if (mapa2[i][y_local] instanceof Vazio || mapa2[i][y_local] instanceof ZumbiRastejante || mapa2[i][y_local] instanceof Jogador) {
                     botoes[i][y_local].setVisible(true);
@@ -215,7 +214,6 @@ public class InterfaceJogo extends JFrame {
                 }
             }
 
-            // Revelar coluna para cima
             for (int i = x_local; i >= 0; i--) { //cima
                 if (mapa2[i][y_local] instanceof Vazio || mapa2[i][y_local] instanceof ZumbiRastejante || mapa2[i][y_local] instanceof Jogador) {
                     botoes[i][y_local].setVisible(true);

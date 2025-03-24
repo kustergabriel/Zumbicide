@@ -18,57 +18,52 @@ public class MenuInicial extends JFrame implements ActionListener {
         setTitle("ZUMBIS ODEIAM JAVA");
         setSize(700, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Centraliza a janela na tela
+        setLocationRelativeTo(null); // Centraliza a janela
 
-        // Container principal
         Container container = getContentPane();
         container.setLayout(new BorderLayout());
 
-        // Carregando a imagem
         String caminhoImagem = "C:/Users/Gabriel Azevedo/Documents/GitHub/Zumbicide/ProjetoPOO/ProjetoPOO/Imagens/imagemLogo.jpg";
         ImageIcon imagemIcon = new ImageIcon(caminhoImagem);
 
-        // Redimensionando a imagem (opcional)
         Image imagem = imagemIcon.getImage();
         Image novaImagem = imagem.getScaledInstance(700, 700, Image.SCALE_SMOOTH);
         imagemIcon = new ImageIcon(novaImagem);
 
-        // Criando um JLabel para exibir a imagem
+        // Criando um JLabel para mostrar a imagem
         JLabel labelImagem = new JLabel(imagemIcon);
         labelImagem.setHorizontalAlignment(JLabel.CENTER);
 
         // Adicionando a imagem ao container
         container.add(labelImagem, BorderLayout.CENTER);
 
-        // Painel para os botões
+        // Painel para os botao
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         painelBotoes.setBackground(Color.LIGHT_GRAY);
 
-        // Criando os botões
         botaoSair = new JButton("Sair do Jogo");
         botaoDebug = new JButton("DEBUG");
         botaoDificuldade1 = new JButton("Fácil");
         botaoDificuldade2 = new JButton("Médio");
         botaoDificuldade3 = new JButton("Difícil");
 
-        // Adicionando os botões ao painel
+        // Adicionando os botao no painel
         painelBotoes.add(botaoDificuldade1);
         painelBotoes.add(botaoDificuldade2);
         painelBotoes.add(botaoDificuldade3);
         painelBotoes.add(botaoDebug);
         painelBotoes.add(botaoSair);
 
-        // Adicionando o painel de botões ao rodapé (SOUTH) do BorderLayout
+        // Adicionando o painel de botao em baixo
         container.add(painelBotoes, BorderLayout.SOUTH);
 
-        // Adicionando listeners aos botões
+        // Adicionando acao aos botao
         botaoSair.addActionListener(this);
         botaoDebug.addActionListener(this);
         botaoDificuldade1.addActionListener(this);
         botaoDificuldade2.addActionListener(this);
         botaoDificuldade3.addActionListener(this);
 
-        // Tornando a janela visível
         setVisible(true);
     }
 
