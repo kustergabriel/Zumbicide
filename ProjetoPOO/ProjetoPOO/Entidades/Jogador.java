@@ -16,7 +16,7 @@ public class Jogador extends Entidades {
         this.x = 0;
         this.y = 0;
         this.vida = 10;
-        this.dano = 1;
+        this.dano = 2;
     }
 
 
@@ -82,27 +82,31 @@ public class Jogador extends Entidades {
         this.arma = true;
     }
 
-    public void setAtadura () {
+    public void setAtadura() {
         this.atadura = true;
     }
 
+    public void setAtaduraFalse() {
+        this.atadura = false;
+    }
 
     public int getDano() {
         return dano;
     }
 
     public int getDanoTacoBasebol() {
-        return dano = 2;
+        return dano = 3;
     }
 
     public int getDanoArma() {
-        return dano = 3;
+        return dano = 4;
     }
 
 
     public void regeneraVida () {
         if (getAtadura() == true) {
             setVida(vida + 5);
+            setAtaduraFalse();
         }
     }
 

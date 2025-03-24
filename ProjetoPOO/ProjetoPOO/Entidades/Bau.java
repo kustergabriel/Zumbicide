@@ -2,7 +2,7 @@ package Entidades;
 
 public class Bau extends Entidades{
     //ATRIBUTOS
-    String item;
+   private String item;
     
 
     //CONSTRUTOR

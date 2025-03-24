@@ -7,4 +7,4 @@ C W N N N N N N Z N
 N N N W W W W N N N
 N R N W N N N B N N
 N N N N N W N Z N N
-B N N W W W N N N G 
+B N Z W W W N N N G 
